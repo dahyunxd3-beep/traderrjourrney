@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trader Journey (By: Uyutrrr)</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--text:#e8eefb;--blue:#78a9ff;--green:#35d39a;--red:#ff6b78;--onaccent:#081326;
+--panel2:color-mix(in srgb,var(--text) 6%,var(--panel));--line:color-mix(in srgb,var(--text) 14%,var(--panel));--muted:color-mix(in srgb,var(--text) 64%,var(--bg));
+--side:color-mix(in srgb,var(--bg) 55%,var(--panel));--input:color-mix(in srgb,var(--bg) 60%,var(--panel));--inset:color-mix(in srgb,var(--bg) 50%,var(--panel));
+--hover:color-mix(in srgb,var(--text) 7%,var(--side));--active:color-mix(in srgb,var(--blue) 16%,var(--side));--track:color-mix(in srgb,var(--text) 14%,var(--panel));
+--chip:color-mix(in srgb,var(--text) 12%,var(--panel));--dash:color-mix(in srgb,var(--text) 35%,var(--panel));color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 Inter,Segoe UI,Arial,sans-serif}
+h1{font-size:22px;margin:0}h2{font-size:16px;margin:0 0 14px}h3{font-size:14px;margin:0 0 8px}.sub{color:var(--muted);font-size:12px}
+.wrap{max-width:1500px;margin:auto;padding:22px}
+button,.filebtn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:9px 13px;border-radius:9px;cursor:pointer;font-weight:600;font-family:inherit;font-size:13px}
+button.primary{background:var(--blue);color:var(--onaccent);border-color:var(--blue)}button.danger{color:var(--red)}button:hover,.filebtn:hover{filter:brightness(1.15)}
+.filebtn{display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}.metric{font-size:25px;font-weight:750;margin-top:5px}.positive{color:var(--green)}.negative{color:var(--red)}.muted{color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:14px}.layout.even{grid-template-columns:repeat(2,minmax(0,1fr))}.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.formgrid.f5{grid-template-columns:repeat(5,minmax(0,1fr))}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select,textarea{width:100%;background:var(--input);border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);outline:none;font-family:inherit;font-size:14px}input:focus,select:focus,textarea:focus{border-color:var(--blue)}textarea{min-height:78px;resize:vertical}.wide{grid-column:1/-1}.two{grid-column:span 2}
+input[type=checkbox]{width:auto}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}
+.stack>.panel{margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap;vertical-align:middle}th{color:var(--muted);font-weight:600}td.notes{white-space:normal;min-width:160px;max-width:260px}.tablewrap{overflow:auto}.tablewrap.tall{max-height:360px}
+#calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.dayname{text-align:center;color:var(--muted);font-size:11px;padding:5px}.day{min-height:76px;border:1px solid var(--line);border-radius:8px;padding:6px;background:var(--inset)}.day .num{font-size:11px;color:var(--muted)}.day .val{font-weight:700;font-size:12px;margin-top:12px}.day.today{border-color:var(--blue)}.calendarhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px;flex-wrap:wrap}
+.barlist{display:flex;flex-direction:column;gap:9px}.barrow{display:grid;grid-template-columns:85px 1fr 75px;gap:8px;align-items:center;font-size:12px}.bar{height:9px;background:var(--track);border-radius:20px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--green)}.bar>i.loss{background:var(--red)}
+.drop{border:1px dashed var(--dash);border-radius:10px;padding:14px;text-align:center;color:var(--muted);background:var(--inset)}.previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.previews img{width:110px;height:75px;object-fit:cover;border-radius:7px;border:1px solid var(--line)}
+.badge{display:inline-block;padding:3px 7px;border-radius:20px;background:var(--chip);font-size:10px}.footer{margin:22px 0;color:var(--muted);font-size:11px}
+.profileline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 14px}.profileline .badge{font-size:11px}
+
+/* ===== Sidebar & layout ===== */
+.app{display:flex;min-height:100vh}
+#sidebar{width:252px;flex:none;align-self:flex-start;position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;z-index:60}
+.brand{padding:20px 18px 10px}.brand b{font-size:18px;display:block}
+.sideuser{display:flex;gap:10px;align-items:center;margin:8px 14px 6px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--panel);cursor:pointer}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:var(--onaccent);font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.sideuser .nm{font-weight:700;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sideuser>div:last-child{min-width:0}
+.sideacc{margin:0 14px 12px}.sideacc label{margin-bottom:3px}.sideacc select{padding:8px;font-size:13px}
+#nav{display:flex;flex-direction:column;padding:4px 0}
+.navbtn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;border:0;border-left:3px solid transparent;border-radius:0;padding:12px 18px;color:var(--muted);font-weight:600;font-size:14px}
+.navbtn .ic{width:20px;text-align:center;font-size:16px}
+.navbtn:hover{background:var(--hover);filter:none;color:var(--text)}
+.navbtn.active{background:var(--active);color:var(--text);border-left-color:var(--blue)}
+.sidefoot{margin-top:auto;padding:14px 18px;color:var(--muted);font-size:11px;border-top:1px solid var(--line)}
+main{flex:1;min-width:0}
+.topbar{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--side);position:sticky;top:0;z-index:40}
+.clock{margin-left:auto;font-size:12px;color:var(--muted);text-align:right;white-space:nowrap}.clock b{color:var(--text)}
+#menuBtn{display:none;padding:8px 12px;font-size:16px}
+#backdrop{display:none;position:fixed;inset:0;background:#000a;z-index:55}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}.kv span{color:var(--muted)}
+.subtabs{display:flex;gap:7px;margin:0 0 14px;flex-wrap:wrap}.subtab.active{background:var(--blue);color:var(--onaccent);border-color:var(--blue)}
+.thumb{width:48px;height:34px;object-fit:cover;border-radius:5px;border:1px solid var(--line);cursor:zoom-in;vertical-align:middle}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.gcard{background:var(--inset);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.gmain{width:100%;height:170px;object-fit:cover;display:block;cursor:zoom-in}
+.gnone{height:170px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;background:var(--inset)}
+.gthumbs{display:flex;gap:4px;padding:6px 8px 0;flex-wrap:wrap}.gthumbs img{width:44px;height:32px;object-fit:cover;border-radius:5px;border:1px solid var(--line);cursor:zoom-in}
+.gi{padding:10px;font-size:12px}
+.acard{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--inset);margin-bottom:10px}.acard.on{border-color:var(--blue)}
+#lightbox{display:none;position:fixed;inset:0;background:#000d;z-index:120;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;flex-direction:column}
+#lightbox img#lightboxImg{max-width:100%;max-height:calc(100% - 40px);border-radius:8px}
+#lbCap{margin-top:8px;color:#cdd7ea;text-align:center}
+.lbnav{position:fixed;top:50%;transform:translateY(-50%);font-size:28px;padding:6px 16px;z-index:121}
+.chk{display:flex;gap:9px;align-items:flex-start;color:var(--text);font-size:13px;padding:6px 0;margin:0}
+.warn{padding:10px 12px;border-radius:9px;background:color-mix(in srgb,var(--red) 14%,var(--panel));color:var(--red);border:1px solid color-mix(in srgb,var(--red) 35%,var(--panel));font-size:12px;margin-top:8px}
+.okbox{padding:10px 12px;border-radius:9px;background:color-mix(in srgb,var(--green) 14%,var(--panel));color:var(--green);border:1px solid color-mix(in srgb,var(--green) 35%,var(--panel));font-size:12px;margin-top:8px}
+@supports not (color:color-mix(in srgb,red,blue)){:root{--panel2:#18233a;--line:#293650;--muted:#93a3bd;--side:#0e1527;--input:#0c1425;--inset:#0d1526;--hover:#131d33;--active:#16213a;--track:#26334c;--chip:#24334d;--dash:#536987}}
+.seg{display:flex;gap:6px;flex-wrap:wrap}.seg button.on{background:var(--blue);color:var(--onaccent);border-color:var(--blue)}
+.colorrow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}input[type=color]{padding:2px;height:40px;cursor:pointer}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}.sw{width:30px;height:30px;border-radius:50%;padding:0;border:2px solid var(--line)}.sw:hover{transform:scale(1.12);filter:none}
+#themeBtn{margin-left:10px;white-space:nowrap}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.layout,.layout.even{grid-template-columns:1fr}.formgrid,.formgrid.f5{grid-template-columns:repeat(2,1fr)}
+ #sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}#sidebar.open{transform:none}#backdrop.show{display:block}#menuBtn{display:inline-block}}
+@media(max-width:560px){.wrap{padding:12px}.grid{grid-template-columns:repeat(2,1fr)}.formgrid,.formgrid.f5{grid-template-columns:1fr}.two{grid-column:auto}.topbar{padding:12px}.metric{font-size:20px}.clock .d{display:none}.hide-sm{display:none}}
+</style></head>
+<body>
+<div id="setupOverlay" style="display:none;position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 94%,transparent);z-index:99;align-items:center;justify-content:center;padding:16px;overflow:auto">
+ <div class="panel" style="width:min(560px,100%);box-shadow:0 20px 70px #0009">
+  <div class="sub" style="letter-spacing:1.5px">TRADER JOURNEY SETUP</div>
+  <h1 id="setupHeading" style="margin:7px 0 5px">Buat akun trading</h1>
+  <p class="sub" style="margin:0 0 18px">Kamu bisa menyimpan lebih dari satu akun dan berpindah akun kapan saja. Setiap akun punya jurnal, modal, dan trading plan sendiri.</p>
+  <form id="profileForm"><div class="formgrid">
+   <div class="wide"><label>Nama trader / pengguna</label><input id="profileName" placeholder="Nama kamu" required></div>
+   <div class="wide"><label>Nama akun trading</label><input id="accountName" placeholder="Contoh: XAU Main Account" required></div>
+   <div><label>Jenis akun</label><select id="accountType"><option>Real Account</option><option>Funded Account</option><option>Demo Account</option><option>Backtest Account</option></select></div>
+   <div><label>Mata uang akun</label><select id="currency"><option value="USD">USD ($)</option><option value="IDR">IDR (Rp)</option></select></div>
+   <div class="wide"><label>Modal awal / Initial Capital</label><input id="initialCapital" type="number" min="0.01" step="any" placeholder="Contoh: 1000" required></div>
+  </div>
+  <div class="actions"><button class="primary" type="submit">Simpan akun</button><button type="button" id="cancelProfile" class="hidden">Batal</button></div>
+  <p class="sub" style="margin:12px 0 0">Data disimpan lokal di browser ini. Tidak membutuhkan akun online.</p>
+  </form>
+ </div>
+</div>
+<div id="lightbox"><button id="lbPrev" class="lbnav" style="left:14px" aria-label="Sebelumnya">‹</button><img id="lightboxImg" alt=""><div id="lbCap"></div><button id="lbNext" class="lbnav" style="right:14px" aria-label="Berikutnya">›</button></div>
+<div id="backdrop"></div>
+
+<div class="app">
+<aside id="sidebar">
+ <div class="brand"><b>📒 Trader Journey</b><div class="sub">By: Uyutrrr • Backtest &amp; Live</div></div>
+ <div class="sideuser" id="sideUser"></div>
+ <div class="sideacc"><label for="accountSwitch">Akun aktif</label><select id="accountSwitch"></select></div>
+ <nav id="nav">
+  <button class="navbtn active" data-tab="dashboard"><span class="ic">📊</span>Dashboard</button>
+  <button class="navbtn" data-tab="user"><span class="ic">👤</span>User</button>
+  <button class="navbtn" data-tab="journal"><span class="ic">📝</span>Journal</button>
+  <button class="navbtn" data-tab="tradelist"><span class="ic">📋</span>Daftar Trade</button>
+  <button class="navbtn" data-tab="gallery"><span class="ic">🖼️</span>Journal Chart Image</button>
+  <button class="navbtn" data-tab="analytic"><span class="ic">📈</span>Analytic</button>
+  <button class="navbtn" data-tab="plan"><span class="ic">🎯</span>Trading Plan</button>
+  <button class="navbtn" data-tab="calendarTab"><span class="ic">📅</span>Kalender PNL</button>
+  <button class="navbtn" data-tab="calc"><span class="ic">🧮</span>Kalkulator Trading</button>
+  <button class="navbtn" data-tab="settings"><span class="ic">⚙️</span>Pengaturan</button>
+ </nav>
+ <div class="sidefoot">v2.6 • data tersimpan lokal di browser</div>
+</aside>
+
+<main>
+<div class="topbar"><button id="menuBtn" aria-label="Menu">☰</button><h1 id="pageTitle">Dashboard</h1><div class="clock" id="nyClock"></div><button id="themeBtn" title="Ganti mode gelap / terang"></button></div>
+<div class="wrap">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="tabpane">
+ <div class="profileline" id="profileLine"></div>
+ <div class="grid" id="metrics"></div>
+ <div class="layout"><div class="panel"><h2>Ringkasan performa</h2><div id="summary" class="barlist"></div></div><div class="panel"><h2>Distribusi hasil</h2><div id="distribution" class="sub">Belum ada transaksi.</div></div></div>
+ <div class="panel" style="margin-top:14px"><h2>Kurva equity</h2><div id="dashEquity"></div></div>
+ <div class="panel" style="margin-top:14px"><h2>Transaksi terbaru</h2><div id="recent" class="tablewrap"></div></div>
+</section>
+
+<!-- USER / AKUN -->
+<section id="user" class="tabpane hidden">
+ <div class="layout">
+  <div class="panel"><div class="calendarhead"><h2 style="margin:0">Daftar akun</h2><button id="addAccBtn" class="primary">＋ Tambah akun</button></div><div id="accList"></div></div>
+  <div class="panel"><h2>Ringkasan akun aktif</h2><div id="userStats"></div></div>
+ </div>
+</section>
+
+<!-- JOURNAL (INPUT) -->
+<section id="journal" class="tabpane hidden">
+<div class="panel"><h2 id="formTitle">Tambah trade</h2>
+<form id="tradeForm"><input type="hidden" id="editId">
+<div class="formgrid">
+<div><label>Tanggal & waktu (New York time)</label><input id="date" type="datetime-local" required><button type="button" id="dateNow" style="margin-top:6px;padding:4px 9px;font-size:11px">Pakai waktu NY sekarang</button></div>
+<div><label>Mode</label><select id="mode"><option>Live</option><option>Backtest</option></select></div>
+<div><label>Instrumen</label><select id="symbol" required></select></div>
+<div><label>Pair / arah</label><select id="side"><option>Buy</option><option>Sell</option></select></div>
+<div><label>Session</label><select id="session"><option>Asia</option><option>London</option><option>New York</option><option>Other</option></select></div>
+<div><label>Strategi / model</label><input id="strategy" placeholder="ICT Silver Bullet"></div>
+<div><label>Lot / kontrak</label><input id="lot" type="number" min="0" step="0.01" value="0.01" required></div>
+<div><label>Entry price</label><input id="entry" type="number" step="any" required></div>
+<div><label>Exit price</label><input id="exit" type="number" step="any" required></div>
+<div><label>Nilai PnL per 1.0 gerak, per 1 lot (mata uang akun)</label><input id="contract" type="number" step="any" value="100" required><div class="sub" id="contractHint"></div></div>
+<div><label>Komisi + swap (mata uang akun)</label><input id="cost" type="number" step="any" value="0"></div>
+<div><label>Hasil trade</label><input id="pnlPreview" readonly placeholder="Otomatis dihitung"></div>
+<div><label>Stop loss</label><input id="sl" type="number" step="any"></div>
+<div><label>Take profit</label><input id="tp" type="number" step="any"></div>
+<div><label>Risk : Reward (otomatis)</label><input id="rr" readonly placeholder="Isi entry, SL, dan exit/TP"><div class="sub" id="rrHint"></div></div>
+<div><label>Emosi</label><select id="emotion"><option>Tenang</option><option>FOMO</option><option>Takut</option><option>Greedy</option><option>Revenge</option><option>Ragu-ragu</option></select></div>
+<div><label>Patuh trading plan?</label><select id="discipline"><option>Ya</option><option>Tidak</option><option>Sebagian</option></select></div>
+<div><label>Setup / alasan entry</label><input id="setup" placeholder="MSS, FVG, liquidity sweep..."></div>
+<div class="wide"><label>Catatan / evaluasi</label><textarea id="notes" placeholder="Apa yang berjalan baik? Apa yang perlu diperbaiki?"></textarea></div>
+<div class="wide"><label>Screenshot chart (bisa pilih beberapa gambar)</label><input id="images" type="file" accept="image/*" multiple><div class="drop" id="dropzone">Drop gambar chart di sini atau pilih file di atas</div><div class="previews" id="previews"></div></div>
+</div><div class="actions"><button class="primary" type="submit">Simpan trade</button><button type="button" id="resetBtn">Reset form</button></div>
+<div class="sub" id="saveMsg" style="margin-top:10px"></div>
+<div class="sub" style="margin-top:10px">Rumus PnL: (Exit − Entry) × lot × nilai kontrak × arah − biaya. Nilai kontrak dan biaya harus menggunakan mata uang akun. Buy = +1, Sell = −1. Semua waktu dicatat dalam zona waktu New York.</div>
+</form></div>
+</section>
+
+<!-- DAFTAR TRADE -->
+<section id="tradelist" class="tabpane hidden">
+ <div class="panel"><h2>Daftar trade</h2>
+  <div id="listFilter"></div>
+  <div class="sub" id="listSummary" style="margin:12px 0 8px"></div>
+  <div id="listTable" class="tablewrap"></div>
+ </div>
+</section>
+
+<!-- JOURNAL CHART IMAGE -->
+<section id="gallery" class="tabpane hidden">
+ <div class="panel"><h2>Journal Chart Image</h2>
+  <div id="galFilter"></div>
+  <div style="margin:12px 0 4px"><label class="chk" style="color:var(--muted)"><input type="checkbox" id="gOnlyImg"> Tampilkan hanya trade yang punya screenshot</label></div>
+  <div class="sub" id="galSummary" style="margin:0 0 12px"></div>
+  <div class="gallery" id="galleryGrid"></div>
+ </div>
+</section>
+
+<!-- ANALYTIC -->
+<section id="analytic" class="tabpane hidden">
+ <div class="panel" style="margin-bottom:14px"><h2>Filter periode</h2><div class="formgrid"><div><label>Dari tanggal</label><input id="fromDate" type="date"></div><div><label>Sampai tanggal</label><input id="toDate" type="date"></div><div><label>Mode</label><select id="monitorMode"><option>Semua</option><option>Live</option><option>Backtest</option></select></div></div><div class="actions"><button id="resetAnalytic">Reset filter</button></div></div>
+ <div class="grid" id="monitorMetrics"></div>
+ <div class="grid" id="kpiGrid"></div>
+ <div class="panel" style="margin-bottom:14px"><h2>Kurva equity</h2><div id="anEquity"></div></div>
+ <div class="layout even" style="margin-bottom:14px"><div class="panel"><h2>Berdasarkan session</h2><div id="sessionStats" class="barlist"></div></div><div class="panel"><h2>Live vs Backtest</h2><div id="modeStats" class="tablewrap"></div></div></div>
+ <div class="layout even" style="margin-bottom:14px"><div class="panel"><h2>Berdasarkan strategi</h2><div id="stratStats" class="tablewrap"></div></div><div class="panel"><h2>Berdasarkan emosi</h2><div id="emoStats" class="tablewrap"></div></div></div>
+ <div class="layout even"><div class="panel"><h2>Kepatuhan trading plan</h2><div id="discStats" class="tablewrap"></div></div><div class="panel"><h2>Berdasarkan instrumen</h2><div id="symStats" class="tablewrap"></div></div></div>
+</section>
+
+<!-- TRADING PLAN -->
+<section id="plan" class="tabpane hidden">
+ <div class="layout">
+  <div class="panel"><h2>Trading plan <span class="sub" id="planOwner"></span></h2>
+   <form id="planForm"><div class="formgrid">
+    <div class="wide"><label>Nama plan</label><input id="pName" placeholder="Contoh: XAUUSD NY Session Plan"></div>
+    <div><label>Instrumen / market</label><input id="pMarkets" placeholder="XAUUSD, NAS100"></div>
+    <div><label>Session trading</label><input id="pSessions" placeholder="London, New York"></div>
+    <div><label>Target RR minimum</label><input id="pRR" type="number" step="any" placeholder="2"></div>
+    <div><label>Risk per trade (%)</label><input id="pRisk" type="number" step="any" placeholder="1"></div>
+    <div><label>Maks. loss harian (mata uang akun)</label><input id="pMaxLoss" type="number" step="any" placeholder="30"></div>
+    <div><label>Maks. trade per hari</label><input id="pMaxTrades" type="number" step="1" placeholder="3"></div>
+    <div class="wide"><label>Strategi / model utama</label><textarea id="pStrategy" placeholder="Jelaskan model trading yang dipakai"></textarea></div>
+    <div class="wide"><label>Aturan entry</label><textarea id="pEntry" placeholder="Kondisi yang harus terpenuhi sebelum entry"></textarea></div>
+    <div class="wide"><label>Aturan exit / manajemen posisi</label><textarea id="pExit" placeholder="SL, TP, partial, break even, dsb."></textarea></div>
+    <div class="wide"><label>Checklist pra-trade (satu item per baris)</label><textarea id="pChecklist" placeholder="Bias HTF jelas&#10;Liquidity sweep terjadi&#10;RR minimal 1:2"></textarea></div>
+    <div class="wide"><label>Catatan tambahan</label><textarea id="pNotes"></textarea></div>
+   </div><div class="actions"><button class="primary" type="submit">Simpan plan</button></div></form>
+  </div>
+  <div class="stack">
+   <div class="panel"><h2>Status hari ini (NY)</h2><div id="planStatus"></div></div>
+   <div class="panel"><h2>Checklist sebelum entry</h2><div id="checklistBox"></div><div class="actions"><button id="resetChecklist">Reset centang</button></div></div>
+  </div>
+ </div>
+</section>
+
+<!-- KALENDER -->
+<section id="calendarTab" class="tabpane hidden"><div class="panel"><div class="calendarhead"><button id="prevMonth">←</button><h2 id="monthLabel" style="margin:0"></h2><button id="nextMonth">→</button></div><div id="calendar"></div><div class="sub" style="margin-top:12px" id="monthSummary"></div></div></section>
+
+<!-- KALKULATOR -->
+<section id="calc" class="tabpane hidden">
+ <div class="subtabs"><button class="subtab active" data-sub="calcRisk">Risk Calculator</button><button class="subtab" data-sub="calcInv">Investment Calculator (Compounding)</button></div>
+
+ <div id="calcRisk" class="subpane">
+  <div class="layout even">
+   <div class="panel"><h2>Input risk calculator</h2>
+    <div class="formgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+     <div class="wide"><label>Instrumen</label><select id="cSymbol"></select><div class="sub" id="cHint"></div></div>
+     <div><label>Balance / equity</label><input id="cBalance" type="number" step="any"></div>
+     <div><label>Risiko per trade (%)</label><input id="cRisk" type="number" step="any" value="1"></div>
+     <div><label>Entry price</label><input id="cEntry" type="number" step="any"></div>
+     <div><label>Stop loss</label><input id="cSL" type="number" step="any"></div>
+     <div><label>Take profit (opsional)</label><input id="cTP" type="number" step="any"></div>
+     <div><label>Nilai PnL per 1.0 gerak / 1 lot</label><input id="cContract" type="number" step="any"></div>
+     <div class="wide"><label>Lot manual (kosongkan untuk pakai lot rekomendasi)</label><input id="cLot" type="number" step="0.01" min="0"></div>
+    </div>
+    <div class="actions"><button id="cUseEquity">Pakai equity saat ini</button><button id="cToJournal" class="primary">Kirim ke form Journal</button></div>
+   </div>
+   <div class="panel"><h2>Hasil</h2><div id="calcOut"></div></div>
+  </div>
+ </div>
+
+ <div id="calcInv" class="subpane hidden">
+  <div class="layout even">
+   <div class="panel"><h2>Input investment calculator</h2>
+    <div class="formgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+     <div><label>Modal awal</label><input id="iInit" type="number" step="any" min="0"></div>
+     <div><label>Tambahan modal tiap bulan</label><input id="iContrib" type="number" step="any" min="0" value="0"></div>
+     <div><label>Target return (%)</label><input id="iRate" type="number" step="any" value="5"></div>
+     <div><label>Periode return</label><select id="iRateType"><option value="Bulan">Per bulan</option><option value="Tahun">Per tahun</option></select></div>
+     <div><label>Durasi</label><input id="iDur" type="number" step="1" min="1" value="12"></div>
+     <div><label>Satuan durasi</label><select id="iDurType"><option value="Bulan">Bulan</option><option value="Tahun">Tahun</option></select></div>
+    </div>
+    <div class="actions"><button id="iUseEquity">Pakai equity saat ini</button></div>
+    <div class="sub" style="margin-top:10px">Compounding: profit tiap bulan ditambahkan ke modal sehingga bulan berikutnya menghasilkan profit dari modal yang lebih besar. Tambahan modal dimasukkan di akhir bulan. Ini proyeksi matematis, bukan jaminan hasil trading.</div>
+   </div>
+   <div class="panel"><h2>Hasil proyeksi</h2><div id="invOut"></div></div>
+  </div>
+  <div class="panel" style="margin-top:14px"><h2>Grafik pertumbuhan saldo</h2><div id="invChart"></div></div>
+  <div class="panel" style="margin-top:14px"><h2>Tabel pertumbuhan</h2><div id="invTable" class="tablewrap tall"></div></div>
+ </div>
+</section>
+
+<!-- PENGATURAN -->
+<section id="settings" class="tabpane hidden">
+ <div class="layout even">
+  <div class="stack">
+   <div class="panel"><h2>Tampilan & warna</h2>
+    <label>Mode tampilan</label>
+    <div class="seg" id="themeMode"><button type="button" data-m="dark">🌙 Gelap</button><button type="button" data-m="light">☀️ Terang</button><button type="button" data-m="auto">🖥️ Ikuti sistem</button></div>
+    <h3 style="margin-top:18px">Warna mode <span id="themeFor"></span></h3>
+    <p class="sub" style="margin-top:0">Gelap dan Terang punya pengaturan warna sendiri-sendiri. Perubahan langsung terlihat dan tersimpan otomatis.</p>
+    <div class="colorrow" id="themeColors"></div>
+    <label style="margin-top:14px">Pilihan cepat warna aksen</label>
+    <div class="swatches" id="themeSwatches"></div>
+    <div class="actions"><button id="themeResetMode">Reset warna mode ini</button><button id="themeResetAll" class="danger">Reset semua tampilan</button></div>
+   </div>
+   <div class="panel"><h2>Default form trade</h2>
+    <form id="settingsForm"><div class="formgrid" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+     <div><label>Instrumen default</label><select id="sSymbol"></select></div>
+     <div><label>Lot default</label><input id="sLot" type="number" step="0.01" min="0"></div>
+     <div><label>Nilai PnL per 1.0 gerak / 1 lot</label><input id="sContract" type="number" step="any"></div>
+     <div><label>Komisi + swap default</label><input id="sCost" type="number" step="any"></div>
+    </div><div class="actions"><button class="primary" type="submit">Simpan pengaturan</button></div></form>
+   </div>
+   <div class="panel"><h2>Konversi waktu trade lama</h2>
+    <p class="sub" style="margin-top:0">Trade yang dibuat sebelum versi ini mungkin dicatat dengan jam lokal perangkat. Tombol ini mengubah waktu trade lama pada akun aktif dari zona waktu perangkat ke waktu New York. Trade yang sudah ditandai NY dilewati, jadi aman bila terpencet dua kali.</p>
+    <div class="actions" style="margin-top:0"><button id="convertTz">Konversi trade lama ke waktu NY</button></div>
+   </div>
+  </div>
+  <div class="panel"><h2>Data & backup</h2>
+   <p class="sub" style="margin-top:0">Semua akun, trade, plan, dan pengaturan tersimpan di browser ini. Export JSON secara berkala sebagai backup, import untuk melanjutkan di browser/perangkat lain.</p>
+   <div class="actions" style="margin-top:0"><button id="exportBtn" class="primary">Export data (.json)</button><label class="filebtn" style="margin:0">Import / drag file<input id="importFile" type="file" accept=".json,application/json" hidden></label><button id="csvBtn">Export CSV</button></div>
+   <h3 style="margin-top:22px">Zona berbahaya</h3>
+   <div class="actions" style="margin-top:0"><button id="clearTrades" class="danger">Hapus semua trade akun aktif</button><button id="clearAll" class="danger">Reset semua data</button></div>
+  </div>
+ </div>
+</section>
+
+<div class="footer">Penyimpanan lokal: data berada di browser/perangkat ini. Export JSON secara berkala sebagai backup. File ini bekerja offline setelah disimpan.</div>
+</div>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const KEY='tradeJournal_v1',PROFILE_KEY='tradeJournal_profile_v1',PLAN_KEY='tradeJournal_plan_v1',SET_KEY='tradeJournal_settings_v1',CHK_KEY='tradeJournal_checks_v1',ACC_KEY='tradeJournal_accounts_v2',ACT_KEY='tradeJournal_active_v2';
+const DEF={symbol:'XAUUSD',lot:0.01,contract:100,cost:0};
+const NY='America/New_York';
+const TITLES={dashboard:'Dashboard',user:'User',journal:'Journal',tradelist:'Daftar Trade',gallery:'Journal Chart Image',analytic:'Analytic',plan:'Trading Plan',calendarTab:'Kalender PNL',calc:'Kalkulator Trading',settings:'Pengaturan'};
+let allTrades=[],accounts=[],activeId=null,editingAcc=null,pendingImages=[],monthCursor=new Date(),settings={...DEF},currentTab='dashboard',calcSub='calcRisk';
+const F={mode:'Semua',sym:'Semua',res:'Semua',from:'',to:''};
+let lb={imgs:[],i:0,cap:''};
+monthCursor.setDate(1);
+const num=v=>Number(v)||0;
+const pad=n=>String(n).padStart(2,'0');
+const uid=p=>p+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function readJSON(k,fb){try{const v=JSON.parse(localStorage.getItem(k));return v??fb}catch{return fb}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const acc=()=>accounts.find(a=>a.id===activeId)||null;
+const TR=()=>allTrades.filter(t=>t.accountId===activeId);
+const getPlan=()=>acc()?.plan||{};
+function money(v,c){c=c||acc()?.currency||'USD';return (v<0?'−':'')+new Intl.NumberFormat(c==='IDR'?'id-ID':'en-US',{style:'currency',currency:c,minimumFractionDigits:c==='IDR'?0:2,maximumFractionDigits:c==='IDR'?0:2}).format(Math.abs(v))}
+function pnlClass(n){return n>=0?'positive':'negative'}
+function calc(t){return (num(t.exit)-num(t.entry))*num(t.lot)*num(t.contract)*(t.side==='Buy'?1:-1)-num(t.cost)}
+function metrics(items){let total=items.reduce((a,t)=>a+calc(t),0),wins=items.filter(t=>calc(t)>0).length,loss=items.filter(t=>calc(t)<0).length,avg=items.length?total/items.length:0,wr=items.length?wins/items.length*100:0;return {total,wins,loss,avg,wr,count:items.length}}
+function sorted(items){return items.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''))}
+function cards(list){return list.map(x=>`<div class="card"><div class="sub">${x[0]}</div><div class="metric ${x[2]||''}">${x[1]}</div></div>`).join('')}
+
+/* ===== Waktu New York ===== */
+const MON=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+function nyISO(d=new Date()){const o={};new Intl.DateTimeFormat('en-CA',{timeZone:NY,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d).forEach(x=>o[x.type]=x.value);return `${o.year}-${o.month}-${o.day}T${o.hour}:${o.minute}`}
+function todayKey(){return nyISO().slice(0,10)}
+function fmtDate(s){const m=/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s||'');if(!m)return s||'-';return `${+m[3]} ${MON[+m[2]-1]} ${m[1]}, ${m[4]}:${m[5]} NY`}
+function tickClock(){const d=new Date();$('nyClock').innerHTML=`🕒 New York <b>${d.toLocaleTimeString('en-US',{timeZone:NY,hour:'2-digit',minute:'2-digit'})}</b><span class="d"> • ${d.toLocaleDateString('id-ID',{timeZone:NY,weekday:'short',day:'numeric',month:'short'})}</span>`}
+
+/* ===== Daftar instrumen ===== */
+const FX=s=>s.split(' ').map(x=>[x]);
+const INSTR=[
+ {g:'Forex — Major',l:FX('EURUSD GBPUSD USDJPY USDCHF USDCAD AUDUSD NZDUSD')},
+ {g:'Forex — Minor / Cross',l:FX('EURGBP EURJPY EURCHF EURAUD EURCAD EURNZD GBPJPY GBPCHF GBPAUD GBPCAD GBPNZD AUDJPY AUDCHF AUDCAD AUDNZD NZDJPY NZDCHF NZDCAD CADJPY CADCHF CHFJPY')},
+ {g:'Forex — Exotic',l:FX('USDSGD USDHKD USDCNH USDMXN USDZAR USDTRY USDNOK USDSEK USDDKK USDPLN USDHUF USDCZK USDTHB USDINR USDIDR EURTRY EURPLN EURNOK EURSEK EURHUF EURCZK EURZAR GBPSGD GBPZAR SGDJPY ZARJPY')},
+ {g:'Metals',l:[['XAUUSD','Gold'],['XAGUSD','Silver'],['XPTUSD','Platinum'],['XPDUSD','Palladium'],['XAUEUR','Gold/EUR'],['XAGEUR','Silver/EUR'],['XAUAUD','Gold/AUD'],['XAUGBP','Gold/GBP']]},
+ {g:'Indices',l:[['US30','Dow Jones'],['US500','S&P 500'],['NAS100','Nasdaq 100'],['US2000','Russell 2000'],['GER40','DAX'],['UK100','FTSE 100'],['FRA40','CAC 40'],['EU50','Euro Stoxx 50'],['ESP35','IBEX 35'],['SWI20','SMI'],['AUS200','ASX 200'],['JPN225','Nikkei 225'],['HK50','Hang Seng'],['CN50','China A50'],['DXY','US Dollar Index']]}
+];
+const MINFO={XAUUSD:[100,'USD'],XAGUSD:[5000,'USD'],XPTUSD:[100,'USD'],XPDUSD:[100,'USD'],XAUEUR:[100,'EUR'],XAGEUR:[5000,'EUR'],XAUAUD:[100,'AUD'],XAUGBP:[100,'GBP'],US30:[1,'USD'],US500:[1,'USD'],NAS100:[1,'USD'],US2000:[1,'USD'],GER40:[1,'EUR'],UK100:[1,'GBP'],FRA40:[1,'EUR'],EU50:[1,'EUR'],ESP35:[1,'EUR'],SWI20:[1,'CHF'],AUS200:[1,'AUD'],JPN225:[1,'JPY'],HK50:[1,'HKD'],CN50:[1,'USD'],DXY:[1,'USD']};
+function cInfo(s){if(MINFO[s])return {size:MINFO[s][0],q:MINFO[s][1]};if(/^[A-Z]{6}$/.test(s||''))return {size:100000,q:s.slice(3)};return null}
+function symOptions(sel){let found=false,html=INSTR.map(g=>`<optgroup label="${esc(g.g)}">`+g.l.map(x=>{if(x[0]===sel)found=true;return `<option value="${x[0]}"${x[0]===sel?' selected':''}>${x[0]}${x[1]?' — '+esc(x[1]):''}</option>`}).join('')+'</optgroup>').join('');if(sel&&!found)html=`<optgroup label="Lainnya"><option value="${esc(sel)}" selected>${esc(sel)}</option></optgroup>`+html;return html}
+function setSymbolSelect(id,val){$(id).innerHTML=symOptions(val)}
+function applyContract(sym,ctId,hintId){const ci=cInfo(sym),h=$(hintId);if(!ci){h.textContent='';return}const cur=acc()?.currency||'USD',auto=ci.q===cur;if(auto)$(ctId).value=ci.size;h.textContent=`Kontrak umum: ${ci.size.toLocaleString('id-ID')} ${ci.q} per 1.0 gerak / lot. `+(auto?'Terisi otomatis.':`Quote ${ci.q} berbeda dengan mata uang akun (${cur}), konversi manual.`)+' Sesuaikan dengan spesifikasi broker.'}
+
+/* ===== Storage ===== */
+function save(){try{localStorage.setItem(KEY,JSON.stringify(allTrades))}catch(e){alert('Gagal menyimpan: penyimpanan browser penuh. Kurangi ukuran/jumlah screenshot atau export data lalu hapus sebagian trade.')}}
+function saveAccounts(){try{localStorage.setItem(ACC_KEY,JSON.stringify(accounts));if(activeId)localStorage.setItem(ACT_KEY,activeId);else localStorage.removeItem(ACT_KEY)}catch(e){alert('Gagal menyimpan data akun.')}}
+function saveSettings(){localStorage.setItem(SET_KEY,JSON.stringify(settings))}
+function load(){
+ allTrades=readJSON(KEY,[]);if(!Array.isArray(allTrades))allTrades=[];
+ settings={...DEF,...(readJSON(SET_KEY,{})||{})};
+ accounts=readJSON(ACC_KEY,null);
+ if(!Array.isArray(accounts)){accounts=[];const old=readJSON(PROFILE_KEY,null);
+  if(old&&old.name){accounts.push({...old,id:uid('acc'),plan:readJSON(PLAN_KEY,{})||{},checks:readJSON(CHK_KEY,{})||{},createdAt:Date.now()});allTrades.forEach(t=>{if(!t.accountId)t.accountId=accounts[0].id});save()}
+  saveAccounts()}
+ activeId=localStorage.getItem(ACT_KEY);if(!accounts.find(a=>a.id===activeId))activeId=accounts[0]?.id||null}
+
+/* ===== Navigasi ===== */
+function openMenu(){$('sidebar').classList.add('open');$('backdrop').classList.add('show')}
+function closeMenu(){$('sidebar').classList.remove('open');$('backdrop').classList.remove('show')}
+$('menuBtn').onclick=()=>$('sidebar').classList.contains('open')?closeMenu():openMenu();
+$('backdrop').onclick=closeMenu;
+function go(tab){currentTab=tab;document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('hidden',p.id!==tab));$('pageTitle').textContent=TITLES[tab]||'';closeMenu();render();window.scrollTo(0,0)}
+document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>go(b.dataset.tab));
+$('sideUser').onclick=()=>go('user');
+
+/* ===== Akun (multi user) ===== */
+function showProfile(id){
+ editingAcc=id||null;const a=id?accounts.find(x=>x.id===id):null;
+ $('setupHeading').textContent=a?'Edit akun':(accounts.length?'Tambah akun baru':'Buat akun trading');
+ $('profileName').value=a?.name||acc()?.name||'';$('accountName').value=a?.accountName||'';$('accountType').value=a?.accountType||'Real Account';$('currency').value=a?.currency||'USD';$('initialCapital').value=a?.initialCapital??'';
+ $('cancelProfile').classList.toggle('hidden',!accounts.length);$('setupOverlay').style.display='flex'}
+function closeProfile(){$('setupOverlay').style.display='none'}
+$('cancelProfile').onclick=closeProfile;$('addAccBtn').onclick=()=>showProfile();
+$('profileForm').addEventListener('submit',e=>{e.preventDefault();
+ const capital=num($('initialCapital').value);if(capital<=0){alert('Modal awal harus lebih besar dari nol.');return}
+ const data={name:$('profileName').value.trim(),accountName:$('accountName').value.trim(),accountType:$('accountType').value,currency:$('currency').value,initialCapital:capital};
+ if(editingAcc){Object.assign(accounts.find(x=>x.id===editingAcc),data)}
+ else{const a={id:uid('acc'),...data,plan:{},checks:{},createdAt:Date.now()};
+  if(!accounts.length){allTrades.forEach(t=>{if(!t.accountId)t.accountId=a.id});save()}
+  accounts.push(a);activeId=a.id;clearCalcInputs()}
+ saveAccounts();closeProfile();resetForm();render()});
+function clearCalcInputs(){['cBalance','iInit','cContract'].forEach(i=>$(i).value='');delete $('cRisk').dataset.touched}
+function setActive(id){if(!accounts.find(a=>a.id===id))return;activeId=id;saveAccounts();clearCalcInputs();resetForm();render()}
+window.delAcc=id=>{const a=accounts.find(x=>x.id===id);if(!a)return;const n=allTrades.filter(t=>t.accountId===id).length;
+ if(!confirm(`Hapus akun "${a.accountName}" beserta ${n} trade di dalamnya? Tindakan ini tidak bisa dibatalkan. Pastikan sudah export backup.`))return;
+ accounts=accounts.filter(x=>x.id!==id);allTrades=allTrades.filter(t=>t.accountId!==id);if(activeId===id)activeId=accounts[0]?.id||null;
+ save();saveAccounts();clearCalcInputs();resetForm();render();if(!accounts.length)showProfile()};
+window.setActive=setActive;window.showProfile=showProfile;
+$('accountSwitch').onchange=e=>{const v=e.target.value;if(v==='__new'){e.target.value=activeId||'';showProfile();return}setActive(v)};
+
+/* ===== Render umum ===== */
+function render(){renderSide();({dashboard:renderDashboard,user:renderUser,journal:()=>{},tradelist:renderTradeList,gallery:renderGallery,analytic:renderAnalytic,plan:renderPlan,calendarTab:renderCalendar,calc:renderCalc,settings:renderSettings})[currentTab]()}
+function renderSide(){
+ const a=acc();
+ $('sideUser').innerHTML=a?`<div class="avatar">${esc((a.name||'?').charAt(0).toUpperCase())}</div><div><div class="nm">${esc(a.name)}</div><div class="sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(a.accountType)} • ${esc(a.currency)}</div></div>`:`<div class="avatar">?</div><div><div class="nm">Belum ada akun</div><div class="sub">Klik untuk membuat akun</div></div>`;
+ $('accountSwitch').innerHTML=accounts.map(x=>`<option value="${x.id}"${x.id===activeId?' selected':''}>${esc(x.accountName)}</option>`).join('')+'<option value="__new">＋ Tambah akun…</option>';
+ if(!accounts.length)$('accountSwitch').value='__new'}
+
+/* ===== Tabel trade (dipakai Dashboard & Daftar Trade) ===== */
+function tradeRow(t,full){const p=calc(t),im=t.images||[];
+ return `<tr><td>${fmtDate(t.date)}</td><td><span class="badge">${esc(t.mode)}</span></td><td><b>${esc(t.symbol)}</b><br>${esc(t.side)}</td><td>${esc(t.session)}</td>${full?`<td>${esc(t.strategy||'-')}</td>`:''}<td>${esc(t.lot)}</td><td>${esc(t.entry)}</td><td>${esc(t.exit)}</td>${full?`<td>${esc(t.sl||'-')}</td><td>${esc(t.tp||'-')}</td><td>${esc(t.rr||'-')}</td>`:''}<td class="${pnlClass(p)}"><b>${money(p)}</b></td><td>${esc(t.emotion||'-')}</td><td>${im.length?`<img class="thumb" loading="lazy" src="${im[0]}" onclick="openTradeImg('${esc(t.id)}',0)" alt=""> <span class="sub">${im.length}</span>`:'-'}</td>${full?`<td class="notes">${esc((t.notes||'').slice(0,90))}</td>`:''}<td><button onclick="editTrade('${esc(t.id)}')">Edit</button> <button class="danger" onclick="deleteTrade('${esc(t.id)}')">Hapus</button></td></tr>`}
+function tradeTable(items,full){
+ if(!items.length)return '<div class="sub" style="padding:15px">Belum ada data trade.</div>';
+ const head=['Tanggal (NY)','Mode','Instrumen','Session',...(full?['Strategi']:[]),'Lot','Entry','Exit',...(full?['SL','TP','RR']:[]),'PnL','Emosi','Chart',...(full?['Catatan']:[]),'Aksi'];
+ return `<table><thead><tr>${head.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${items.map(t=>tradeRow(t,full)).join('')}</tbody></table>`}
+
+/* ===== Filter bersama Daftar Trade & Journal Chart Image ===== */
+function filterBar(p){return `<div class="formgrid f5"><div><label>Mode</label><select id="${p}Mode"><option>Semua</option><option>Live</option><option>Backtest</option></select></div><div><label>Instrumen</label><select id="${p}Sym"></select></div><div><label>Hasil</label><select id="${p}Res"><option>Semua</option><option>Profit</option><option>Loss</option><option>Breakeven</option></select></div><div><label>Dari tanggal (NY)</label><input id="${p}From" type="date"></div><div><label>Sampai tanggal (NY)</label><input id="${p}To" type="date"></div></div>`}
+function syncFilters(){
+ const syms=[...new Set(TR().map(t=>t.symbol).filter(Boolean))].sort();
+ if(F.sym!=='Semua'&&!syms.includes(F.sym))F.sym='Semua';
+ ['l','g'].forEach(p=>{$(p+'Sym').innerHTML=['Semua',...syms].map(s=>`<option${s===F.sym?' selected':''}>${esc(s)}</option>`).join('');$(p+'Mode').value=F.mode;$(p+'Res').value=F.res;$(p+'From').value=F.from;$(p+'To').value=F.to})}
+function filtered(){return sorted(TR()).reverse().filter(t=>{const d=(t.date||'').slice(0,10),p=Math.round(calc(t)*100);
+ return (F.mode==='Semua'||t.mode===F.mode)&&(F.sym==='Semua'||t.symbol===F.sym)&&(F.res==='Semua'||(F.res==='Profit'?p>0:F.res==='Loss'?p<0:p===0))&&(!F.from||d>=F.from)&&(!F.to||d<=F.to)})}
+function summaryLine(items){const m=metrics(items),n=items.reduce((a,t)=>a+(t.images?.length||0),0);return `${m.count} trade • ${n} gambar • Net PnL <b class="${pnlClass(m.total)}">${money(m.total)}</b> • Win rate ${m.wr.toFixed(0)}%`}
+$('listFilter').innerHTML=filterBar('l');$('galFilter').innerHTML=filterBar('g');
+['listFilter','galFilter'].forEach(id=>$(id).addEventListener('change',e=>{const p=e.target.id.charAt(0);F.mode=$(p+'Mode').value;F.sym=$(p+'Sym').value;F.res=$(p+'Res').value;F.from=$(p+'From').value;F.to=$(p+'To').value;render()}));
+$('gOnlyImg').onchange=renderGallery;
+
+function renderTradeList(){syncFilters();const items=filtered();$('listSummary').innerHTML=summaryLine(items);$('listTable').innerHTML=acc()?tradeTable(items,true):'<div class="sub" style="padding:15px">Buat akun terlebih dahulu.</div>'}
+
+/* ===== Journal Chart Image ===== */
+function gcard(t){const p=calc(t),im=t.images||[],id=esc(t.id);
+ return `<div class="gcard">${im.length?`<img class="gmain" loading="lazy" src="${im[0]}" onclick="openTradeImg('${id}',0)" alt="chart">`:`<div class="gnone">Tidak ada screenshot</div>`}${im.length>1?`<div class="gthumbs">${im.map((s,i)=>`<img loading="lazy" src="${s}" onclick="openTradeImg('${id}',${i})" alt="">`).join('')}</div>`:''}<div class="gi"><b>${esc(t.symbol)}</b> • ${esc(t.side)} <span class="badge">${esc(t.mode)}</span><br><span class="sub">${fmtDate(t.date)} • ${esc(t.session)}${t.strategy?' • '+esc(t.strategy):''}</span><br><b class="${pnlClass(p)}">${money(p)}</b> <span class="sub">• ${im.length} gambar</span> <button style="float:right;padding:3px 8px;font-size:11px" onclick="editTrade('${id}')">Edit</button></div></div>`}
+function renderGallery(){
+ syncFilters();let items=filtered();const all=items;
+ if($('gOnlyImg').checked)items=items.filter(t=>(t.images||[]).length);
+ $('galSummary').innerHTML=summaryLine(all)+($('gOnlyImg').checked?` • ditampilkan ${items.length} trade dengan screenshot`:'');
+ $('galleryGrid').innerHTML=!acc()?'<div class="sub">Buat akun terlebih dahulu.</div>':items.length?items.map(gcard).join(''):'<div class="sub">Tidak ada trade yang cocok dengan filter.</div>'}
+function showLb(){$('lightboxImg').src=lb.imgs[lb.i];$('lbCap').textContent=`${lb.cap} (${lb.i+1}/${lb.imgs.length})`;const multi=lb.imgs.length>1;$('lbPrev').style.display=$('lbNext').style.display=multi?'block':'none';$('lightbox').style.display='flex'}
+window.openTradeImg=(id,i)=>{const t=allTrades.find(x=>x.id===id);if(!t||!(t.images||[]).length)return;lb={imgs:t.images,i:i||0,cap:`${t.symbol} ${t.side} • ${fmtDate(t.date)} • ${money(calc(t))}`};showLb()};
+function lbStep(d){lb.i=(lb.i+d+lb.imgs.length)%lb.imgs.length;showLb()}
+$('lightbox').onclick=()=>{$('lightbox').style.display='none'};
+$('lbPrev').onclick=e=>{e.stopPropagation();lbStep(-1)};$('lbNext').onclick=e=>{e.stopPropagation();lbStep(1)};
+document.addEventListener('keydown',e=>{if($('lightbox').style.display!=='flex')return;if(e.key==='Escape')$('lightbox').style.display='none';if(e.key==='ArrowLeft'&&lb.imgs.length>1)lbStep(-1);if(e.key==='ArrowRight'&&lb.imgs.length>1)lbStep(1)});
+
+/* ===== Equity chart ===== */
+function renderEquity(target,items){
+ const s=sorted(items),cap=num(acc()?.initialCapital);
+ if(!s.length){$(target).innerHTML='<div class="sub">Belum ada transaksi.</div>';return}
+ let eq=cap;const pts=[cap];s.forEach(t=>{eq+=calc(t);pts.push(eq)});
+ const W=700,H=220,P=28,mn=Math.min(...pts),mx=Math.max(...pts),rg=(mx-mn)||1;
+ const X=i=>P+i*(W-2*P)/Math.max(1,pts.length-1),Y=v=>H-P-(v-mn)/rg*(H-2*P);
+ const line=pts.map((v,i)=>`${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+ const area=`${X(0).toFixed(1)},${H-P} ${line} ${X(pts.length-1).toFixed(1)},${H-P}`;
+ const col=eq>=cap?'var(--green)':'var(--red)';
+ $(target).innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block"><line x1="${P}" x2="${W-P}" y1="${Y(cap).toFixed(1)}" y2="${Y(cap).toFixed(1)}" style="stroke:var(--dash)" stroke-dasharray="4 4"/><polygon points="${area}" style="fill:${col}" fill-opacity=".12"/><polyline points="${line}" fill="none" style="stroke:${col}" stroke-width="2.2" stroke-linejoin="round"/><text x="${P}" y="14" style="fill:var(--muted)" font-size="11">${money(mx)}</text><text x="${P}" y="${H-6}" style="fill:var(--muted)" font-size="11">${money(mn)}</text></svg><div class="sub">Garis putus-putus = modal awal. ${s.length} trade.</div>`}
+function multiLine(target,series){
+ const W=700,H=220,P=28,all=series.flatMap(s=>s.pts),mn=Math.min(...all),mx=Math.max(...all),rg=(mx-mn)||1,len=series[0].pts.length;
+ const X=i=>P+i*(W-2*P)/Math.max(1,len-1),Y=v=>H-P-(v-mn)/rg*(H-2*P);
+ const lines=series.map(s=>`<polyline points="${s.pts.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}" fill="none" style="stroke:${s.color}" stroke-width="2.2" stroke-linejoin="round"/>`).join('');
+ $(target).innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">${lines}<text x="${P}" y="14" style="fill:var(--muted)" font-size="11">${money(mx)}</text><text x="${P}" y="${H-6}" style="fill:var(--muted)" font-size="11">${money(mn)}</text></svg><div class="sub">${series.map(s=>`<span style="color:${s.color}">●</span> ${s.name}`).join(' &nbsp; ')} • sumbu X = bulan (0–${len-1})</div>`}
+
+/* ===== Dashboard ===== */
+function renderDashboard(){
+ const a=acc(),trades=TR();
+ $('profileLine').innerHTML=a?`<b>${esc(a.name)}</b><span class="badge">${esc(a.accountName)}</span><span class="badge">${esc(a.accountType)}</span><span class="badge">${esc(a.currency)}</span>`:`<span class="sub">Belum ada akun.</span> <button class="primary" onclick="showProfile()">Buat akun</button>`;
+ let m=metrics(trades),capital=num(a?.initialCapital),equity=capital+m.total,ret=capital?m.total/capital*100:0;
+ $('metrics').innerHTML=cards([['Modal awal',money(capital),''],['Equity saat ini',money(equity),pnlClass(equity)],['Total PnL',money(m.total),pnlClass(m.total)],['Return akun',(ret>=0?'+':'')+ret.toFixed(2)+'%',pnlClass(ret)]]);
+ $('recent').innerHTML=tradeTable(sorted(trades).reverse().slice(0,7),false);
+ let g=trades.filter(t=>calc(t)>0).reduce((s,t)=>s+calc(t),0),l=Math.abs(trades.filter(t=>calc(t)<0).reduce((s,t)=>s+calc(t),0));
+ let pf=l?(g/l).toFixed(2):g?'∞':'-';
+ $('summary').innerHTML=[['Average PnL / trade',money(m.avg)],['Win rate',m.wr.toFixed(1)+'%'],['Total trade',m.count],['Net profit factor',pf]].map(x=>`<div class="barrow" style="grid-template-columns:1fr auto"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ $('distribution').innerHTML=`<div style="font-size:28px;font-weight:750" class="${pnlClass(m.total)}">${money(m.total)}</div><p class="sub">${m.wins} trade profit • ${m.loss} trade loss • ${trades.length-m.wins-m.loss} breakeven</p>`;
+ renderEquity('dashEquity',trades)}
+
+/* ===== User / daftar akun ===== */
+function renderUser(){
+ $('accList').innerHTML=accounts.length?accounts.map(a=>{const m=metrics(allTrades.filter(t=>t.accountId===a.id)),cap=num(a.initialCapital),on=a.id===activeId;
+  return `<div class="acard ${on?'on':''}"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>${esc(a.accountName)}</b> ${on?'<span class="badge" style="background:var(--blue);color:var(--onaccent)">Aktif</span>':''}<div class="sub">${esc(a.name)} • ${esc(a.accountType)} • ${esc(a.currency)}</div></div><div style="text-align:right"><div class="sub">Equity</div><b class="${pnlClass(m.total)}">${money(cap+m.total,a.currency)}</b></div></div><div class="sub" style="margin:8px 0">Modal awal ${money(cap,a.currency)} • ${m.count} trade • PnL ${money(m.total,a.currency)}</div><div class="actions" style="margin:0">${on?'':`<button class="primary" onclick="setActive('${a.id}')">Pakai akun ini</button>`}<button onclick="showProfile('${a.id}')">Edit</button><button class="danger" onclick="delAcc('${a.id}')">Hapus</button></div></div>`}).join(''):'<div class="sub">Belum ada akun. Klik "Tambah akun" untuk memulai.</div>';
+ const a=acc();
+ if(!a){$('userStats').innerHTML='<div class="sub">-</div>';return}
+ const tr=TR(),m=metrics(tr),cap=num(a.initialCapital),live=metrics(tr.filter(t=>t.mode==='Live')),bt=metrics(tr.filter(t=>t.mode==='Backtest'));
+ $('userStats').innerHTML=[['Akun',a.accountName],['Trader',a.name],['Equity saat ini',money(cap+m.total)],['Total PnL',money(m.total)],['Total trade',m.count],['Trade Live',live.count+' • '+money(live.total)],['Trade Backtest',bt.count+' • '+money(bt.total)]].map(x=>`<div class="kv"><span>${x[0]}</span><b>${esc(x[1])}</b></div>`).join('')}
+
+/* ===== Journal (input trade) ===== */
+const FIELDS=['date','mode','symbol','side','session','strategy','lot','entry','exit','contract','cost','sl','tp','rr','emotion','discipline','setup','notes'];
+function resetForm(){$('tradeForm').reset();$('editId').value='';$('formTitle').textContent='Tambah trade';$('date').value=nyISO();setSymbolSelect('symbol',settings.symbol);$('lot').value=settings.lot;$('contract').value=settings.contract;$('cost').value=settings.cost;$('contractHint').textContent='';$('rrHint').textContent='';pendingImages=[];$('previews').innerHTML='';$('pnlPreview').value=''}
+function readForm(){return {id:$('editId').value||String(Date.now()),date:$('date').value,mode:$('mode').value,symbol:$('symbol').value.trim().toUpperCase(),side:$('side').value,session:$('session').value,strategy:$('strategy').value,lot:num($('lot').value),entry:num($('entry').value),exit:num($('exit').value),contract:num($('contract').value),cost:num($('cost').value),sl:$('sl').value,tp:$('tp').value,rr:$('rr').value,emotion:$('emotion').value,discipline:$('discipline').value,setup:$('setup').value,notes:$('notes').value,images:pendingImages,tz:'NY'}}
+function preview(){$('pnlPreview').value=money(calc(readForm()))}
+['entry','exit','lot','contract','cost','side'].forEach(id=>$(id).addEventListener('input',preview));
+function rrFmt(x){return '1 : '+x.toFixed(2)}
+function updateRR(fallback){
+ const dir=$('side').value==='Buy'?1:-1,en=$('entry').value,sl=$('sl').value,tp=$('tp').value,ex=$('exit').value;
+ const E=num(en),S=num(sl),T=num(tp),X=num(ex),msg=[];let val='',planned=0;
+ const slOk=sl!==''&&en!==''&&(E-S)*dir>0;
+ if(sl!==''&&en!==''&&!slOk)msg.push('<span class="negative">⚠ Stop loss harus di bawah entry untuk Buy, atau di atas entry untuk Sell.</span>');
+ if(slOk){const risk=Math.abs(E-S);
+  if(tp!==''){if((T-E)*dir>0){planned=Math.abs(T-E)/risk;msg.push('Rencana (SL→TP): <b>'+rrFmt(planned)+'</b>')}else msg.push('<span class="negative">⚠ Take profit berada di sisi yang salah.</span>')}
+  if(ex!==''&&en!==''){const r=(X-E)*dir/risk;val=r>=0?rrFmt(r):'-'+Math.abs(r).toFixed(2)+'R';msg.push('Aktual (SL→Exit): <b class="'+(r>=0?'positive':'negative')+'">'+(r>=0?rrFmt(r):'−'+Math.abs(r).toFixed(2)+'R (rugi)')+'</b>')}
+  else if(planned)val=rrFmt(planned)}
+ else if(sl===''&&!fallback)msg.push('Isi Stop loss agar RR terhitung otomatis.');
+ $('rr').value=val||fallback||'';$('rrHint').innerHTML=msg.join('<br>')}
+['entry','exit','sl','tp','side'].forEach(id=>{$(id).addEventListener('input',()=>updateRR());$(id).addEventListener('change',()=>updateRR())});
+$('symbol').addEventListener('change',()=>{applyContract($('symbol').value,'contract','contractHint');preview()});
+$('dateNow').onclick=()=>{$('date').value=nyISO()};
+$('tradeForm').addEventListener('submit',e=>{e.preventDefault();
+ if(!acc()){alert('Buat akun terlebih dahulu.');showProfile();return}
+ let t=readForm();if(!t.date||!t.symbol||!t.lot||!t.contract){alert('Lengkapi tanggal, instrumen, lot, dan nilai kontrak.');return}
+ let i=allTrades.findIndex(x=>x.id===t.id);
+ if(i>=0){t.accountId=allTrades[i].accountId;allTrades[i]=t}else{t.accountId=activeId;allTrades.push(t)}
+ save();resetForm();render();
+ $('saveMsg').innerHTML='✓ Trade tersimpan. <a href="#" style="color:var(--blue)" onclick="go(\'tradelist\');return false">Lihat di Daftar Trade</a>'});
+$('resetBtn').onclick=()=>{resetForm();$('saveMsg').textContent=''};
+window.editTrade=id=>{let t=allTrades.find(x=>x.id===id);if(!t)return;go('journal');
+ setSymbolSelect('symbol',t.symbol);FIELDS.forEach(k=>{if(k==='symbol')return;$(k).value=t[k]??''});
+ $('editId').value=t.id;pendingImages=(t.images||[]).slice();$('formTitle').textContent='Edit trade';$('contractHint').textContent='';$('saveMsg').textContent='';showPreviews();updateRR(t.rr);$('pnlPreview').value=money(calc(t))};
+window.deleteTrade=id=>{if(confirm('Hapus trade ini?')){allTrades=allTrades.filter(t=>t.id!==id);save();render()}};
+function showPreviews(){$('previews').innerHTML=pendingImages.map((src,i)=>`<div><img src="${src}" alt=""><br><button type="button" onclick="removeImage(${i})">×</button></div>`).join('')}
+window.removeImage=i=>{pendingImages.splice(i,1);showPreviews()};
+async function addFiles(files){for(let f of files){if(!f.type.startsWith('image/'))continue;if(f.size>7*1024*1024){alert(f.name+' lebih dari 7MB, dilewati.');continue}let data=await new Promise(res=>{let r=new FileReader();r.onload=()=>res(r.result);r.readAsDataURL(f)});pendingImages.push(data)}showPreviews()}
+$('images').onchange=e=>{addFiles(e.target.files);e.target.value=''};
+$('dropzone').ondragover=e=>{e.preventDefault();e.currentTarget.style.borderColor='var(--blue)'};$('dropzone').ondragleave=e=>e.currentTarget.style.borderColor='';$('dropzone').ondrop=e=>{e.preventDefault();e.currentTarget.style.borderColor='';addFiles(e.dataTransfer.files)};
+
+/* ===== Analytic ===== */
+function analyticItems(){const f=$('fromDate').value,to=$('toDate').value,md=$('monitorMode').value;return TR().filter(t=>{const d=(t.date||'').slice(0,10);return (!f||d>=f)&&(!to||d<=to)&&(md==='Semua'||t.mode===md)})}
+function groupTable(items,keyFn,title){
+ const map={};items.forEach(t=>{const k=keyFn(t)||'(kosong)';(map[k]=map[k]||[]).push(t)});
+ const keys=Object.keys(map);if(!keys.length)return '<div class="sub">Belum ada data.</div>';
+ return `<table><thead><tr><th>${title}</th><th>Trade</th><th>Win rate</th><th>Net PnL</th></tr></thead><tbody>${keys.sort((a,b)=>metrics(map[b]).total-metrics(map[a]).total).map(k=>{const m=metrics(map[k]);return `<tr><td>${esc(k)}</td><td>${m.count}</td><td>${m.wr.toFixed(0)}%</td><td class="${pnlClass(m.total)}"><b>${money(m.total)}</b></td></tr>`}).join('')}</tbody></table>`}
+function renderAnalytic(){
+ const items=analyticItems(),s=sorted(items),p=s.map(calc),m=metrics(items),cap=num(acc()?.initialCapital),equity=cap+m.total,ret=cap?m.total/cap*100:0;
+ const wins=p.filter(x=>x>0),losses=p.filter(x=>x<0),gross=wins.reduce((a,b)=>a+b,0),gl=Math.abs(losses.reduce((a,b)=>a+b,0));
+ let eq=cap,peak=cap,mdd=0,mddPct=0,streak=0,maxStreak=0;
+ p.forEach(x=>{eq+=x;if(eq>peak)peak=eq;const dd=peak-eq;if(dd>mdd){mdd=dd;mddPct=peak?dd/peak*100:0}if(x<0){streak++;maxStreak=Math.max(maxStreak,streak)}else streak=0});
+ $('monitorMetrics').innerHTML=cards([['Modal awal',money(cap),''],['Equity saat ini',money(equity),pnlClass(equity)],['Net PnL',money(m.total),pnlClass(m.total)],['Return',(ret>=0?'+':'')+ret.toFixed(2)+'%',pnlClass(ret)]]);
+ $('kpiGrid').innerHTML=cards([['Total trade',m.count,''],['Win rate',m.wr.toFixed(1)+'%',''],['Profit factor',gl?(gross/gl).toFixed(2):gross?'∞':'-',''],['Expectancy / trade',money(m.avg),pnlClass(m.avg)],['Rata-rata win',wins.length?money(gross/wins.length):'-','positive'],['Rata-rata loss',losses.length?money(-gl/losses.length):'-','negative'],['Trade terbaik',p.length?money(Math.max(...p)):'-',p.length?pnlClass(Math.max(...p)):''],['Trade terburuk',p.length?money(Math.min(...p)):'-',p.length?pnlClass(Math.min(...p)):''],['Max drawdown',mdd?money(-mdd)+' ('+mddPct.toFixed(1)+'%)':'-','negative'],['Loss beruntun maks.',maxStreak,'']]);
+ renderEquity('anEquity',items);
+ const sessions=['Asia','London','New York','Other'],tots=sessions.map(x=>metrics(items.filter(t=>t.session===x)).total),mx=Math.max(1,...tots.map(Math.abs));
+ $('sessionStats').innerHTML=sessions.map((x,i)=>{const a=items.filter(t=>t.session===x);return `<div class="barrow"><span>${x} (${a.length})</span><div class="bar"><i class="${tots[i]<0?'loss':''}" style="width:${Math.abs(tots[i])/mx*100}%"></i></div><b class="${pnlClass(tots[i])}">${money(tots[i])}</b></div>`}).join('');
+ $('modeStats').innerHTML=groupTable(items,t=>t.mode,'Mode');
+ $('stratStats').innerHTML=groupTable(items,t=>t.strategy,'Strategi');
+ $('emoStats').innerHTML=groupTable(items,t=>t.emotion,'Emosi');
+ $('discStats').innerHTML=groupTable(items,t=>t.discipline,'Patuh plan?');
+ $('symStats').innerHTML=groupTable(items,t=>t.symbol,'Instrumen')}
+['fromDate','toDate'].forEach(id=>$(id).oninput=renderAnalytic);$('monitorMode').onchange=renderAnalytic;
+$('resetAnalytic').onclick=()=>{$('fromDate').value='';$('toDate').value='';$('monitorMode').value='Semua';renderAnalytic()};
+
+/* ===== Trading Plan (per akun) ===== */
+const PF={pName:'name',pMarkets:'markets',pSessions:'sessions',pRR:'rr',pRisk:'risk',pMaxLoss:'maxLoss',pMaxTrades:'maxTrades',pStrategy:'strategy',pEntry:'entry',pExit:'exit',pChecklist:'checklist',pNotes:'notes'};
+const ck=()=>{const a=acc();if(!a)return {};a.checks=a.checks||{};return a.checks};
+const clItems=()=>String(getPlan().checklist||'').split('\n').map(x=>x.trim()).filter(Boolean);
+function renderPlan(){const plan=getPlan();$('planOwner').textContent=acc()?'— '+acc().accountName:'';Object.keys(PF).forEach(id=>{$(id).value=plan[PF[id]]??''});renderPlanSide()}
+function renderPlanSide(){
+ const plan=getPlan(),tk=todayKey(),today=TR().filter(t=>(t.date||'').slice(0,10)===tk),m=metrics(today);
+ let html=`<div class="kv"><span>Tanggal NY</span><b>${tk}</b></div><div class="kv"><span>Trade hari ini</span><b>${m.count}${num(plan.maxTrades)?' / '+plan.maxTrades:''}</b></div><div class="kv"><span>PnL hari ini</span><b class="${pnlClass(m.total)}">${money(m.total)}</b></div>`;
+ let warned=false;
+ if(num(plan.maxTrades)&&m.count>=num(plan.maxTrades)){warned=true;html+=`<div class="warn">Batas trade harian tercapai. Sesuai plan, berhenti trading hari ini.</div>`}
+ if(num(plan.maxLoss)&&m.total<=-num(plan.maxLoss)){warned=true;html+=`<div class="warn">Batas loss harian (${money(num(plan.maxLoss))}) tercapai. Sesuai plan, berhenti trading hari ini.</div>`}
+ if(!warned&&(num(plan.maxTrades)||num(plan.maxLoss)))html+=`<div class="okbox">Masih dalam batas plan.</div>`;
+ $('planStatus').innerHTML=html;
+ const items=clItems(),c=ck();
+ $('checklistBox').innerHTML=items.length?items.map((x,i)=>`<label class="chk"><input type="checkbox" ${c[i+'|'+x]?'checked':''} onchange="toggleCheck(${i})"><span>${esc(x)}</span></label>`).join(''):'<div class="sub">Belum ada checklist. Isi di form plan lalu simpan.</div>'}
+window.toggleCheck=i=>{const items=clItems(),k=i+'|'+items[i],c=ck();c[k]=!c[k];saveAccounts()};
+$('resetChecklist').onclick=()=>{const a=acc();if(!a)return;a.checks={};saveAccounts();renderPlanSide()};
+$('planForm').addEventListener('submit',e=>{e.preventDefault();const a=acc();if(!a){alert('Buat akun terlebih dahulu.');showProfile();return}const plan={};Object.keys(PF).forEach(id=>{plan[PF[id]]=$(id).value});a.plan=plan;a.checks={};saveAccounts();renderPlanSide();alert('Trading plan tersimpan untuk akun "'+a.accountName+'".')});
+
+/* ===== Kalender (tanggal NY) ===== */
+function renderCalendar(){
+ const trades=TR();let y=monthCursor.getFullYear(),m=monthCursor.getMonth();$('monthLabel').textContent=monthCursor.toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+ let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate(),names=['Min','Sen','Sel','Rab','Kam','Jum','Sab'],tk=todayKey();
+ let html=names.map(n=>`<div class="dayname">${n}</div>`).join('');for(let i=0;i<first;i++)html+='<div></div>';
+ for(let d=1;d<=days;d++){let key=`${y}-${pad(m+1)}-${pad(d)}`,arr=trades.filter(t=>(t.date||'').slice(0,10)===key),sum=arr.reduce((a,t)=>a+calc(t),0);html+=`<div class="day ${key===tk?'today':''}"><div class="num">${d}</div>${arr.length?`<div class="val ${pnlClass(sum)}">${money(sum)}</div><div class="sub">${arr.length} trade</div>`:''}</div>`}
+ $('calendar').innerHTML=html;
+ const prefix=`${y}-${pad(m+1)}`,mm=metrics(trades.filter(t=>(t.date||'').slice(0,7)===prefix));
+ $('monthSummary').innerHTML=`Bulan ini: <b class="${pnlClass(mm.total)}">${money(mm.total)}</b> dari ${mm.count} trade (win rate ${mm.wr.toFixed(0)}%). Tanggal mengikuti waktu New York; Live dan Backtest digabung.`}
+$('prevMonth').onclick=()=>{monthCursor.setMonth(monthCursor.getMonth()-1);renderCalendar()};$('nextMonth').onclick=()=>{monthCursor.setMonth(monthCursor.getMonth()+1);renderCalendar()};
+
+/* ===== Kalkulator ===== */
+function equityNow(){return num(acc()?.initialCapital)+metrics(TR()).total}
+document.querySelectorAll('.subtab').forEach(b=>b.onclick=()=>{calcSub=b.dataset.sub;document.querySelectorAll('.subtab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.subpane').forEach(p=>p.classList.toggle('hidden',p.id!==calcSub));renderCalc()});
+function renderCalc(){
+ const pl=getPlan();
+ if(!$('cBalance').value&&acc())$('cBalance').value=+equityNow().toFixed(2);
+ if(!$('iInit').value&&acc())$('iInit').value=+equityNow().toFixed(2);
+ if(!$('cContract').value)applyContract($('cSymbol').value,'cContract','cHint');
+ if(!$('cContract').value)$('cContract').value=settings.contract;
+ if(!$('cRisk').dataset.touched&&num(pl.risk))$('cRisk').value=pl.risk;
+ calcRun();invRun()}
+$('cSymbol').addEventListener('change',()=>{applyContract($('cSymbol').value,'cContract','cHint');calcRun()});
+function calcVals(){
+ const bal=num($('cBalance').value),rp=num($('cRisk').value),en=num($('cEntry').value),sl=num($('cSL').value),tp=num($('cTP').value),ct=num($('cContract').value),manual=num($('cLot').value);
+ const riskAmt=bal*rp/100,dist=Math.abs(en-sl),has=!!(en&&sl&&dist>0&&ct>0);
+ const rec=has?Math.floor(riskAmt/(dist*ct)*100)/100:0,lot=manual>0?manual:rec;
+ const risk=has?lot*dist*ct:0,reward=(en&&tp)?Math.abs(tp-en)*lot*ct:0,rr=risk>0&&reward>0?reward/risk:0;
+ return {bal,rp,en,sl,tp,ct,riskAmt,dist,has,rec,lot,risk,reward,rr}}
+function calcRun(){
+ const v=calcVals(),pl=getPlan();
+ let html=[['Risiko yang diizinkan',money(v.riskAmt)],['Jarak stop loss',v.has?+v.dist.toFixed(5):'-'],['Lot rekomendasi',v.has?v.rec.toFixed(2):'-'],['Lot dipakai',v.has?v.lot.toFixed(2):'-'],['Risiko aktual',v.has?money(v.risk):'-'],['Potensi reward (TP)',v.reward?money(v.reward):'-'],['Risk : Reward',v.rr?'1 : '+v.rr.toFixed(2):'-'],['Win rate break-even',v.rr?(100/(1+v.rr)).toFixed(1)+'%':'-']].map(x=>`<div class="kv"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+ if(v.has&&v.tp&&(v.tp-v.en)*(v.sl-v.en)>0)html+='<div class="warn">Take profit dan stop loss berada di sisi yang sama dari entry. Periksa kembali input.</div>';
+ if(v.has&&v.rec===0)html+='<div class="warn">Risiko terlalu kecil untuk lot minimum 0.01 dengan jarak SL ini. Perlebar risiko atau kecilkan jarak SL.</div>';
+ if(num(pl.rr)&&v.rr&&v.rr<num(pl.rr))html+=`<div class="warn">RR di bawah target plan (1 : ${pl.rr}).</div>`;
+ $('calcOut').innerHTML=html}
+['cBalance','cRisk','cEntry','cSL','cTP','cContract','cLot'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='cRisk')$('cRisk').dataset.touched='1';calcRun()}));
+$('cUseEquity').onclick=()=>{$('cBalance').value=+equityNow().toFixed(2);calcRun()};
+$('cToJournal').onclick=()=>{const v=calcVals();if(!v.has){alert('Isi entry, stop loss, dan nilai kontrak terlebih dahulu.');return}
+ resetForm();setSymbolSelect('symbol',$('cSymbol').value);$('entry').value=v.en;$('sl').value=v.sl;if(v.tp)$('tp').value=v.tp;$('lot').value=v.lot.toFixed(2);$('contract').value=v.ct;$('side').value=v.sl<v.en?'Buy':'Sell';updateRR();preview();go('journal')};
+
+/* --- Investment calculator (compounding) --- */
+function invRun(){
+ const P0=num($('iInit').value),c=num($('iContrib').value),r=num($('iRate').value)/100;
+ const n=Math.round(num($('iDur').value)*($('iDurType').value==='Tahun'?12:1));
+ if(n<1||n>600||P0<0||c<0||r<=-1){$('invOut').innerHTML='<div class="warn">Isi durasi 1–600 bulan (maks. 50 tahun), modal dan return yang valid.</div>';$('invChart').innerHTML='';$('invTable').innerHTML='';return}
+ const mr=$('iRateType').value==='Tahun'?Math.pow(1+r,1/12)-1:r;
+ let bal=P0,prin=P0,simpleProfit=0;const ptsC=[P0],ptsS=[P0],rows=[];
+ for(let m=1;m<=n;m++){simpleProfit+=prin*mr;bal=bal*(1+mr)+c;prin+=c;ptsC.push(bal);ptsS.push(prin+simpleProfit);
+  if(n<=60||m%12===0||m===n)rows.push([m,prin,bal-prin,bal,prin+simpleProfit])}
+ const profit=bal-prin,simpleBal=prin+simpleProfit,roi=prin>0?profit/prin*100:0,eff=(Math.pow(1+mr,12)-1)*100;
+ $('invOut').innerHTML=[['Nilai akhir (compounding)',money(bal),'positive'],['Total modal disetor',money(prin)],['Total profit',money(profit),pnlClass(profit)],['ROI total',roi.toFixed(2)+'%',pnlClass(roi)],['Return efektif per tahun',eff.toFixed(2)+'%'],['Tanpa compounding',money(simpleBal)],['Bonus dari compounding',money(bal-simpleBal),pnlClass(bal-simpleBal)],['Durasi',n+' bulan ('+(n/12).toFixed(1)+' tahun)']].map(x=>`<div class="kv"><span>${x[0]}</span><b class="${x[2]||''}">${x[1]}</b></div>`).join('');
+ multiLine('invChart',[{pts:ptsC,color:'var(--green)',name:'Dengan compounding'},{pts:ptsS,color:'var(--blue)',name:'Tanpa compounding'}]);
+ $('invTable').innerHTML=`<table><thead><tr><th>Bulan</th><th>Total modal disetor</th><th>Profit</th><th>Saldo (compounding)</th><th>Saldo tanpa compounding</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x[0]}</td><td>${money(x[1])}</td><td class="${pnlClass(x[2])}">${money(x[2])}</td><td><b>${money(x[3])}</b></td><td>${money(x[4])}</td></tr>`).join('')}</tbody></table>${n>60?'<div class="sub" style="padding:8px">Durasi di atas 60 bulan: tabel ditampilkan per tahun.</div>':''}`}
+['iInit','iContrib','iRate','iDur'].forEach(id=>$(id).addEventListener('input',invRun));['iRateType','iDurType'].forEach(id=>$(id).addEventListener('change',invRun));
+$('iUseEquity').onclick=()=>{$('iInit').value=+equityNow().toFixed(2);invRun()};
+
+/* ===== Pengaturan, export, import ===== */
+function renderSettings(){renderTheme();setSymbolSelect('sSymbol',settings.symbol);$('sLot').value=settings.lot;$('sContract').value=settings.contract;$('sCost').value=settings.cost}
+$('settingsForm').addEventListener('submit',e=>{e.preventDefault();settings={symbol:$('sSymbol').value||DEF.symbol,lot:num($('sLot').value)||DEF.lot,contract:num($('sContract').value)||DEF.contract,cost:num($('sCost').value)};saveSettings();if(!$('editId').value)resetForm();setSymbolSelect('cSymbol',settings.symbol);alert('Pengaturan tersimpan.')});
+$('convertTz').onclick=()=>{const list=TR().filter(t=>t.tz!=='NY');if(!list.length){alert('Tidak ada trade lama yang perlu dikonversi pada akun ini.');return}
+ const zone=Intl.DateTimeFormat().resolvedOptions().timeZone;
+ if(!confirm(`Ubah waktu ${list.length} trade lama dari zona waktu perangkat (${zone}) ke waktu New York? Lakukan hanya jika trade lama diinput dengan jam lokal perangkat. Disarankan export backup dulu.`))return;
+ list.forEach(t=>{const d=new Date(t.date);if(!isNaN(d))t.date=nyISO(d);t.tz='NY'});save();render();alert('Konversi selesai untuk '+list.length+' trade.')};
+/* --- Aplikasi Android (Capacitor): export file lewat menu Bagikan --- */
+function isNative(){return !!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())}
+function blobToB64(blob){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]||'');r.onerror=rej;r.readAsDataURL(blob)})}
+async function nativeShare(blob,name){
+ const P=window.Capacitor.Plugins,fs=P.Filesystem,sh=P.Share;
+ if(!fs||!sh)throw Error('Plugin Filesystem/Share tidak tersedia di aplikasi ini');
+ const data=await blobToB64(blob);
+ const w=await fs.writeFile({path:name,data,directory:'CACHE'});
+ await sh.share({title:name,url:w.uri,dialogTitle:'Simpan / bagikan file backup'})}
+function download(blob,name){
+ if(isNative()){nativeShare(blob,name).catch(e=>{const m=String((e&&e.message)||e);if(!/cancel/i.test(m))alert('Gagal menyimpan file: '+m)});return}
+ let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function nativeChrome(m){
+ if(!isNative())return;
+ try{const sb=window.Capacitor.Plugins.StatusBar;if(!sb)return;
+  requestAnimationFrame(()=>{try{
+   const c=document.createElement('canvas');c.width=c.height=1;const x=c.getContext('2d');x.fillStyle=getComputedStyle($('sidebar')).backgroundColor;x.fillRect(0,0,1,1);
+   const d=x.getImageData(0,0,1,1).data,hex='#'+[d[0],d[1],d[2]].map(v=>v.toString(16).padStart(2,'0')).join('');
+   sb.setBackgroundColor({color:hex});sb.setStyle({style:m==='dark'?'DARK':'LIGHT'})}catch(e){}})}catch(e){}}
+$('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify({app:'TradeJournal',version:4,exportedAt:new Date().toISOString(),activeId,accounts,settings,theme,trades:allTrades},null,2)],{type:'application/json'});download(blob,'trader-journey-'+todayKey()+'.json')};
+$('csvBtn').onclick=()=>{let cols=['akun','date','mode','symbol','side','session','strategy','lot','entry','exit','contract','cost','pnl','sl','tp','rr','emotion','discipline','setup','notes'];const nm=id=>accounts.find(a=>a.id===id)?.accountName||'';
+ let csv=[cols.join(','),...allTrades.map(t=>cols.map(k=>'"'+String(k==='pnl'?calc(t):k==='akun'?nm(t.accountId):t[k]??'').replace(/"/g,'""')+'"').join(','))].join('\n');download(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}),'trader-journey.csv')};
+async function importData(file){try{
+ const obj=JSON.parse(await file.text()),arr=Array.isArray(obj)?obj:obj.trades;if(!Array.isArray(arr))throw Error('Format JSON tidak dikenali');
+ if(!confirm(`Import ${arr.length} trade${Array.isArray(obj.accounts)?' dan '+obj.accounts.length+' akun':''}? Data dengan ID sama akan diperbarui.`))return;
+ if(Array.isArray(obj.accounts)){
+  const am=new Map(accounts.map(a=>[a.id,a]));obj.accounts.forEach(a=>{if(!a.id)a.id=uid('acc');am.set(a.id,{plan:{},checks:{},...a})});accounts=[...am.values()];
+  const fb=obj.accounts[0]?.id||activeId;arr.forEach(t=>{if(!t.accountId)t.accountId=fb});
+  if(!activeId||!accounts.find(a=>a.id===activeId))activeId=obj.activeId&&accounts.find(a=>a.id===obj.activeId)?obj.activeId:accounts[0]?.id||null;
+ }else{
+  let target=activeId;
+  if(obj.profile&&obj.profile.name){const ex=accounts.find(a=>a.name===obj.profile.name&&a.accountName===obj.profile.accountName&&num(a.initialCapital)===num(obj.profile.initialCapital));
+   if(ex)target=ex.id;else{const a={...obj.profile,id:uid('acc'),plan:obj.plan||{},checks:{},createdAt:Date.now()};accounts.push(a);target=a.id}}
+  if(!target)throw Error('Belum ada akun. Buat akun terlebih dahulu sebelum import.');
+  arr.forEach(t=>{if(!t.accountId)t.accountId=target});activeId=target}
+ let map=new Map(allTrades.map(t=>[t.id,t]));arr.forEach((t,i)=>{if(!t.id)t.id='import-'+Date.now()+'-'+i;map.set(t.id,t)});allTrades=[...map.values()];
+ if(obj.settings&&typeof obj.settings==='object'){settings={...DEF,...obj.settings};saveSettings()}
+ if(obj.theme&&typeof obj.theme==='object'){theme=sanitizeTheme(obj.theme);changeTheme()}
+ save();saveAccounts();clearCalcInputs();resetForm();render();alert('Import berhasil. Total '+allTrades.length+' trade di '+accounts.length+' akun.')}catch(e){alert('Gagal import: '+e.message)}}
+$('importFile').onchange=e=>{if(e.target.files[0])importData(e.target.files[0]);e.target.value=''};
+document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{if(e.target.closest('#dropzone'))return;e.preventDefault();let f=[...e.dataTransfer.files].find(x=>x.name.toLowerCase().endsWith('.json'));if(f)importData(f)});
+$('clearTrades').onclick=()=>{const a=acc();if(!a)return;if(confirm(`Hapus SEMUA trade pada akun "${a.accountName}"? Akun, plan, dan pengaturan tetap ada. Pastikan sudah export backup.`)){allTrades=allTrades.filter(t=>t.accountId!==activeId);save();render()}};
+$('clearAll').onclick=()=>{if(confirm('Reset SEMUA data (semua akun, trade, plan, pengaturan)? Tindakan ini tidak bisa dibatalkan.')&&confirm('Yakin? Pastikan sudah export backup.')){[KEY,PROFILE_KEY,PLAN_KEY,SET_KEY,CHK_KEY,ACC_KEY,ACT_KEY].forEach(k=>localStorage.removeItem(k));allTrades=[];accounts=[];activeId=null;settings={...DEF};clearCalcInputs();resetForm();go('dashboard');showProfile()}};
+
+/* ===== Tema (gelap / terang / warna custom) ===== */
+const THEME_KEY='traderJourney_theme_v1';
+const PRESET={
+ dark:{bg:'#0b1020',panel:'#121a2d',text:'#e8eefb',blue:'#78a9ff',green:'#35d39a',red:'#ff6b78'},
+ light:{bg:'#f2f5fb',panel:'#ffffff',text:'#14213d',blue:'#2f6fe4',green:'#0b8a5c',red:'#d6334a'}};
+const TKEYS=[['blue','Warna aksen'],['bg','Latar halaman'],['panel','Panel / kartu'],['text','Teks'],['green','Profit (hijau)'],['red','Loss (merah)']];
+const ACCENTS=[['Biru','#78a9ff','#2f6fe4'],['Hijau','#35d39a','#0b8a5c'],['Ungu','#b794f6','#7c4dd8'],['Pink','#f78fb3','#d6336c'],['Oranye','#ffa94d','#e8590c'],['Cyan','#4dd4e6','#0c8599'],['Kuning','#f5c66b','#b7791f']];
+const HEX=/^#[0-9a-f]{6}$/i;
+let theme={mode:'dark',custom:{dark:{},light:{}}};
+function sanitizeTheme(t){const o={mode:['dark','light','auto'].includes(t&&t.mode)?t.mode:'dark',custom:{dark:{},light:{}}};
+ ['dark','light'].forEach(m=>TKEYS.forEach(([k])=>{const v=t&&t.custom&&t.custom[m]&&t.custom[m][k];if(typeof v==='string'&&HEX.test(v))o.custom[m][k]=v}));return o}
+function loadTheme(){theme=sanitizeTheme(readJSON(THEME_KEY,null))}
+function saveTheme(){try{localStorage.setItem(THEME_KEY,JSON.stringify(theme))}catch(e){}}
+function effMode(){if(theme.mode==='auto')return (window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches)?'light':'dark';return theme.mode}
+function palette(m){return {...PRESET[m],...(theme.custom[m]||{})}}
+function lum(h){const c=[1,3,5].map(i=>{const v=parseInt(h.substr(i,2),16)/255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4)});return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2]}
+function applyTheme(){
+ const m=effMode(),p=palette(m),r=document.documentElement;
+ Object.keys(p).forEach(k=>r.style.setProperty('--'+k,p[k]));
+ {const L=lum(p.blue),dk=lum('#081326');r.style.setProperty('--onaccent',(L+0.05)/(dk+0.05)>=(1.05)/(L+0.05)?'#081326':'#ffffff')}
+ r.style.colorScheme=m;r.dataset.theme=m;nativeChrome(m);
+ $('themeBtn').innerHTML=m==='dark'?'☀️<span class="hide-sm"> Terang</span>':'🌙<span class="hide-sm"> Gelap</span>'}
+function renderTheme(){
+ const m=effMode(),p=palette(m);
+ $('themeMode').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.m===theme.mode));
+ $('themeFor').textContent=m==='dark'?'Gelap':'Terang';
+ TKEYS.forEach(([k])=>{$('tc_'+k).value=p[k]})}
+function changeTheme(){saveTheme();applyTheme();renderTheme()}
+$('themeColors').innerHTML=TKEYS.map(([k,l])=>`<div><label for="tc_${k}">${l}</label><input type="color" id="tc_${k}"></div>`).join('');
+$('themeSwatches').innerHTML=ACCENTS.map((a,i)=>`<button type="button" class="sw" data-i="${i}" title="${a[0]}" aria-label="${a[0]}" style="background:linear-gradient(135deg,${a[1]} 50%,${a[2]} 50%)"></button>`).join('');
+$('themeColors').addEventListener('input',e=>{const k=(e.target.id||'').replace('tc_','');if(!TKEYS.some(x=>x[0]===k)||!HEX.test(e.target.value))return;theme.custom[effMode()][k]=e.target.value;saveTheme();applyTheme()});
+$('themeSwatches').addEventListener('click',e=>{const b=e.target.closest('.sw');if(!b)return;const m=effMode(),a=ACCENTS[+b.dataset.i];theme.custom[m].blue=m==='dark'?a[1]:a[2];changeTheme()});
+$('themeMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;theme.mode=b.dataset.m;changeTheme()});
+$('themeResetMode').onclick=()=>{theme.custom[effMode()]={};changeTheme()};
+$('themeResetAll').onclick=()=>{if(confirm('Kembalikan mode dan semua warna ke bawaan?')){theme=sanitizeTheme(null);changeTheme()}};
+$('themeBtn').onclick=()=>{theme.mode=effMode()==='dark'?'light':'dark';changeTheme()};
+if(window.matchMedia){try{matchMedia('(prefers-color-scheme: light)').addEventListener('change',()=>{if(theme.mode==='auto')changeTheme()})}catch(e){}}
+
+/* ===== Tombol Back Android ===== */
+try{const AP=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.App;
+ if(AP&&isNative())AP.addListener('backButton',()=>{
+  if($('setupOverlay').style.display==='flex'&&accounts.length){closeProfile();return}
+  if($('lightbox').style.display==='flex'){$('lightbox').style.display='none';return}
+  if($('sidebar').classList.contains('open')){closeMenu();return}
+  if(currentTab!=='dashboard'){go('dashboard');return}
+  AP.exitApp()})}catch(e){}
+
+/* ===== Init ===== */
+loadTheme();applyTheme();renderTheme();load();setSymbolSelect('cSymbol',settings.symbol);resetForm();tickClock();setInterval(tickClock,20000);go('dashboard');
+if(!accounts.length)showProfile();
+</script></body></html>

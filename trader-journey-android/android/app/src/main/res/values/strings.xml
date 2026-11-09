@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Trader Journey</string>
+    <string name="title_activity_main">Trader Journey</string>
+    <string name="package_name">com.uyutrrr.traderjourney</string>
+    <string name="custom_url_scheme">com.uyutrrr.traderjourney</string>
+</resources>
