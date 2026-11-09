@@ -11,6 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Cari folder proyek
+        run: |
+          CFG=$(find . -maxdepth 3 -name capacitor.config.json -not -path '*/node_modules/*' | head -n1)
+          if [ -z "$CFG" ]; then
+            echo "capacitor.config.json tidak ditemukan. Unggahan belum lengkap."
+            echo "Isi repository:"; ls -la; exit 1
+          fi
+          DIR=$(dirname "$CFG")
+          echo "Folder proyek: $DIR"
+          ls -la "$DIR"
+          for f in package.json www/index.html android/gradlew; do
+            [ -e "$DIR/$f" ] || { echo "File $f tidak ada di $DIR. Unggah belum lengkap."; exit 1; }
+          done
+          echo "PROJECT_DIR=$DIR" >> "$GITHUB_ENV"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -21,21 +36,24 @@ jobs:
           java-version: 17
 
       - name: Pasang dependensi
+        working-directory: ${{ env.PROJECT_DIR }}
         run: npm install --no-audit --no-fund
 
       - name: Salin aplikasi web ke proyek Android
+        working-directory: ${{ env.PROJECT_DIR }}
         run: npx cap sync android
 
       - name: Build APK
-        working-directory: android
+        working-directory: ${{ env.PROJECT_DIR }}/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
       - name: Ganti nama APK
+        working-directory: ${{ env.PROJECT_DIR }}
         run: cp android/app/build/outputs/apk/debug/app-debug.apk TraderJourney.apk
 
       - uses: actions/upload-artifact@v4
         with:
           name: TraderJourney-APK
-          path: TraderJourney.apk
+          path: ${{ env.PROJECT_DIR }}/TraderJourney.apk
